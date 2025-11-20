@@ -1,0 +1,24 @@
+{
+  "title": "Game Board",
+  "zoom": "Zoom",
+  "pan": "Pan",
+  "addToken": "Add Token",
+  "addObstacle": "Add Obstacle",
+  "toggleFog": "Toggle Fog of War",
+  "distance": "Distance",
+  "grid": "Grid",
+  "settings": "Board Settings",
+  "tokens": {
+    "player": "Player Token",
+    "npc": "NPC Token",
+    "enemy": "Enemy Token",
+    "move": "Move Token",
+    "delete": "Delete Token"
+  },
+  "obstacles": {
+    "wall": "Wall",
+    "door": "Door",
+    "furniture": "Furniture",
+    "terrain": "Terrain"
+  }
+}

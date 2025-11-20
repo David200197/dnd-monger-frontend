@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "title": "Embárcate en Aventuras Épicas",
+    "subtitle": "Una mesa virtual completa para entusiastas de D&D y juegos de rol",
+    "description": "Experimenta un juego fluido con colaboración en tiempo real, mapas interactivos y chat de voz inmersivo.",
+    "playAsPlayer": "Jugar como Jugador",
+    "playAsDM": "Jugar como DM"
+  },
+  "features": {
+    "title": "Características Poderosas",
+    "subtitle": "Todo lo que necesitas para una experiencia de mesa increíble",
+    "interactiveBoard": {
+      "title": "Tablero de Juego Interactivo",
+      "description": "Arrastra y suelta fichas, gestiona obstáculos y navega por hermosos mapas basados en cuadrícula con facilidad."
+    },
+    "realtime": {
+      "title": "Sincronización en Tiempo Real",
+      "description": "Ve cada movimiento al instante. La sincronización perfecta asegura que todos se mantengan en la acción."
+    },
+    "voiceChat": {
+      "title": "Chat de Voz y Texto",
+      "description": "Comunícate naturalmente con chat de voz y texto integrado. Coordina estrategias sin esfuerzo."
+    },
+    "fogOfWar": {
+      "title": "Niebla de Guerra",
+      "description": "Los Dungeon Masters pueden ocultar y revelar secciones del mapa para crear suspenso y misterio."
+    }
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "signup": "Registrarse",
+    "logout": "Cerrar Sesión",
+    "username": "Nombre de Usuario",
+    "password": "Contraseña",
+    "email": "Correo Electrónico",
+    "confirmPassword": "Confirmar Contraseña",
+    "forgotPassword": "¿Olvidaste tu Contraseña?",
+    "noAccount": "¿No tienes una cuenta?",
+    "hasAccount": "¿Ya tienes una cuenta?"
+  },
+  "roles": {
+    "player": "Jugador",
+    "dm": "Dungeon Master",
+    "selectRole": "Selecciona Tu Rol"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "welcome": "Welcome Back!",
+  "subtitle": "Ready for your next adventure?",
+  "createGame": "Create New Game",
+  "createGameDesc": "Start a new campaign as Dungeon Master",
+  "joinGame": "Join Game",
+  "joinGameDesc": "Find and join existing games",
+  "recentGames": "Recent Games",
+  "noGames": "No recent games. Create or join a game to get started!"
+}

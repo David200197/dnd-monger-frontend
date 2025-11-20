@@ -1,0 +1,16 @@
+{
+  "title": "Settings",
+  "profile": "Profile Settings",
+  "profileDesc": "Manage your profile information",
+  "changeAvatar": "Change Avatar",
+  "saveChanges": "Save Changes",
+  "appearance": "Appearance",
+  "appearanceDesc": "Customize your app appearance",
+  "languageDesc": "Choose your preferred language",
+  "notifications": "Notifications",
+  "notificationsDesc": "Manage your notification preferences",
+  "security": "Security",
+  "securityDesc": "Manage your account security",
+  "changePassword": "Change Password",
+  "comingSoon": "Coming soon..."
+}

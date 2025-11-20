@@ -1,0 +1,16 @@
+{
+  "title": "Configuración",
+  "profile": "Configuración de Perfil",
+  "profileDesc": "Administra la información de tu perfil",
+  "changeAvatar": "Cambiar Avatar",
+  "saveChanges": "Guardar Cambios",
+  "appearance": "Apariencia",
+  "appearanceDesc": "Personaliza la apariencia de la aplicación",
+  "languageDesc": "Elige tu idioma preferido",
+  "notifications": "Notificaciones",
+  "notificationsDesc": "Administra tus preferencias de notificaciones",
+  "security": "Seguridad",
+  "securityDesc": "Administra la seguridad de tu cuenta",
+  "changePassword": "Cambiar Contraseña",
+  "comingSoon": "Próximamente..."
+}

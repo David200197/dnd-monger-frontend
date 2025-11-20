@@ -1,0 +1,10 @@
+{
+  "usernameMin": "Username must be at least 3 characters",
+  "usernameMax": "Username cannot exceed 20 characters",
+  "passwordMin": "Password must be at least 6 characters",
+  "emailInvalid": "Please enter a valid email address",
+  "passwordMismatch": "Passwords do not match",
+  "gameNameMin": "Game name must be at least 3 characters",
+  "gameNameMax": "Game name cannot exceed 50 characters",
+  "descriptionMax": "Description cannot exceed 500 characters"
+}
