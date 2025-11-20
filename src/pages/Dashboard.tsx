@@ -1,35 +1,40 @@
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, List, Settings, Users } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { Header } from "@/components/Header";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Plus, List, Users } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Dashboard = () => {
-  const { t } = useTranslation(['ui', 'common']);
+  const { t } = useTranslation(["dashboard", "common"]);
 
   const quickActions = [
     {
-      title: t('ui:dashboard.createGame'),
-      description: t('ui:dashboard.createGameDesc'),
+      title: t("dashboard:createGame"), // Usa 'dashboard:' en lugar de 'ui:'
+      description: t("dashboard:createGameDesc"),
       icon: Plus,
-      link: '/games/create',
-      variant: 'primary' as const,
+      link: "/games/create",
+      variant: "primary" as const,
     },
     {
-      title: t('ui:dashboard.joinGame'),
-      description: t('ui:dashboard.joinGameDesc'),
+      title: t("dashboard:joinGame"),
+      description: t("dashboard:joinGameDesc"),
       icon: List,
-      link: '/games',
-      variant: 'secondary' as const,
+      link: "/games",
+      variant: "secondary" as const,
     },
   ];
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main className="container mx-auto px-4 py-8 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -37,8 +42,12 @@ const Dashboard = () => {
           transition={{ duration: 0.5 }}
         >
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">{t('ui:dashboard.welcome')}</h1>
-            <p className="text-xl text-muted-foreground">{t('ui:dashboard.subtitle')}</p>
+            <h1 className="text-4xl font-bold mb-2">
+              {t("dashboard:welcome")}
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              {t("dashboard:subtitle")}
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -78,12 +87,12 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  {t('ui:dashboard.recentGames')}
+                  {t("dashboard:recentGames")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground text-center py-8">
-                  {t('ui:dashboard.noGames')}
+                  {t("dashboard:noGames")}
                 </p>
               </CardContent>
             </Card>

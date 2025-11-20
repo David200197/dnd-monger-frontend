@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 const GameBoard = () => {
-  const { t } = useTranslation(['board', 'ui']);
+  const { t } = useTranslation(['board', 'chat']);
   const { id } = useParams();
   const [isMuted, setIsMuted] = useState(false);
   const [showChat, setShowChat] = useState(true);
@@ -105,22 +105,22 @@ const GameBoard = () => {
         {showChat && (
           <Card className="w-80 m-4 flex flex-col shadow-elegant border-border/50 bg-card/80 backdrop-blur-sm">
             <div className="p-4 border-b border-border/40">
-              <h3 className="font-semibold">{t('ui:chat.title')}</h3>
+              <h3 className="font-semibold">{t('chat:title')}</h3>
             </div>
             <div className="flex-1 p-4 overflow-y-auto">
               <p className="text-sm text-muted-foreground text-center py-8">
-                {t('ui:chat.noMessages')}
+                {t('chat:noMessages')}
               </p>
             </div>
             <div className="p-4 border-t border-border/40">
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder={t('ui:chat.placeholder')}
+                  placeholder={t('chat:placeholder')}
                   className="flex-1 px-3 py-2 bg-background border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <Button size="sm" className="bg-gradient-primary">
-                  {t('ui:chat.send')}
+                  {t('chat:send')}
                 </Button>
               </div>
             </div>

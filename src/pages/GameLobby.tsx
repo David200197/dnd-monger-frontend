@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ArrowLeft, Crown, Play, Users } from 'lucide-react';
 
 const GameLobby = () => {
-  const { t } = useTranslation(['ui', 'common']);
+  const { t } = useTranslation(['games', 'common']);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -48,7 +48,7 @@ const GameLobby = () => {
                     <CardDescription>{game.description}</CardDescription>
                   </div>
                   <Badge variant="secondary" className="ml-2">
-                    {t('ui:games.lobby')}
+                    {t('games:lobby')}
                   </Badge>
                 </div>
               </CardHeader>
@@ -58,7 +58,7 @@ const GameLobby = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  {t('ui:games.players')} ({players.length}/{game.maxPlayers})
+                  {t('games:players')} ({players.length}/{game.maxPlayers})
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -87,20 +87,20 @@ const GameLobby = () => {
           <div className="space-y-6">
             <Card className="shadow-elegant border-border/50 bg-card/80 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle>{t('ui:games.gameInfo')}</CardTitle>
+                <CardTitle>{t('games:gameInfo')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('ui:games.dm')}:</span>
+                  <span className="text-muted-foreground">{t('games:dm')}:</span>
                   <span className="font-medium">{game.dm.username}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('ui:games.maxPlayers')}:</span>
+                  <span className="text-muted-foreground">{t('games:maxPlayers')}:</span>
                   <span className="font-medium">{game.maxPlayers}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('ui:games.status')}:</span>
-                  <Badge variant="secondary">{t('ui:games.waiting')}</Badge>
+                  <span className="text-muted-foreground">{t('games:status')}:</span>
+                  <Badge variant="secondary">{t('games:waiting')}</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -111,7 +111,7 @@ const GameLobby = () => {
               onClick={() => navigate(`/game/${id}/board`)}
             >
               <Play className="h-4 w-4 mr-2" />
-              {t('ui:games.startGame')}
+              {t('games:startGame')}
             </Button>
           </div>
         </div>
