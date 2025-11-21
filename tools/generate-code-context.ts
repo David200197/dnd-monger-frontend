@@ -153,7 +153,9 @@ class CodeContextGenerator {
   }
 
   private generateMarkdown(files: FileInfo[]): string {
-    let markdown = `# Contexto del Código\n\n`;
+    let markdown = `voy a pasarte conexto de mi codigo antes de pedirte cambios. Ojo, cualquier cambio que te pida,\n`
+    markdown += `debe seguir las buenas practicas de la programacion, buena UI/UX, responsive, codigo mantenible, y seguir SOLID\n\n`;
+    markdown += `# Contexto del Código\n\n`;
     markdown += `*Generado automáticamente el ${new Date().toLocaleString()}*\n\n`;
     markdown += `Este archivo contiene todo el código fuente del proyecto para propósitos de contexto.\n\n`;
     markdown += `## Archivos del Proyecto\n\n`;
