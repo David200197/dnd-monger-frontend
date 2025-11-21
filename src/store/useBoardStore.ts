@@ -86,6 +86,7 @@ interface BoardState {
   addDrawing: (drawing: Omit<Scene["drawings"][0], "id">) => void;
   startMeasurement: (position: BoardPosition) => void;
   endMeasurement: () => void;
+  deleteScene: (id: string) => void;
 }
 
 export const useBoardStore = create<BoardState>()(
@@ -261,6 +262,22 @@ export const useBoardStore = create<BoardState>()(
       startMeasurement: (position) => set({ measurementStart: position }),
 
       endMeasurement: () => set({ measurementStart: null }),
+      // En src/store/useBoardStore.ts, agregar esta acción:
+      deleteScene: (sceneId: string) =>
+        set((state) => {
+          const newScenes = state.scenes.filter(
+            (scene) => scene.id !== sceneId
+          );
+          const newCurrentSceneId =
+            state.currentSceneId === sceneId
+              ? newScenes[0]?.id || null
+              : state.currentSceneId;
+
+          return {
+            scenes: newScenes,
+            currentSceneId: newCurrentSceneId,
+          };
+        }),
     }),
     {
       name: "board-storage",

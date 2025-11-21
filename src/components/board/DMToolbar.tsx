@@ -1,26 +1,42 @@
-// src/components/GameBoard/DMToolbar.tsx
+// src/components/board/DMToolbar.tsx
+import { useState } from "react";
 import { useBoardStore } from "@/store/useBoardStore";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   MousePointer,
   Ruler,
   Eye,
-  Circle,
   Pencil,
   Hand,
   Grid3x3,
-  Hexagon,
-  Upload,
+  Plus,
   Trash2,
+  Edit,
+  MoreHorizontal,
+  Settings,
+  Map,
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const DMToolbar = () => {
   const {
@@ -30,153 +46,370 @@ export const DMToolbar = () => {
     setActiveTool,
     createScene,
     updateScene,
+    deleteScene,
     clearFog,
   } = useBoardStore();
 
+  const [isSceneDialogOpen, setIsSceneDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [newSceneName, setNewSceneName] = useState("");
+  const [editSceneName, setEditSceneName] = useState("");
+
   const currentScene = scenes.find((s) => s.id === currentSceneId);
 
-  if (!currentScene) {
-    return (
-      <div className="p-4 bg-card/80 backdrop-blur-sm border-b border-border/40">
-        <Button onClick={() => createScene("Nueva Escena")}>
-          Crear Primera Escena
-        </Button>
-      </div>
-    );
-  }
-
+  // Herramientas compactas con iconos
   const tools = [
     { id: "pointer" as const, icon: MousePointer, label: "Seleccionar" },
     { id: "pan" as const, icon: Hand, label: "Mover" },
     { id: "measure" as const, icon: Ruler, label: "Medir" },
     { id: "fog" as const, icon: Eye, label: "Niebla" },
     { id: "draw" as const, icon: Pencil, label: "Dibujar" },
-    { id: "token" as const, icon: Circle, label: "Token" },
   ];
 
+  const handleCreateScene = () => {
+    if (newSceneName.trim()) {
+      createScene(newSceneName.trim());
+      setNewSceneName("");
+      setIsSceneDialogOpen(false);
+    }
+  };
+
+  const handleEditScene = () => {
+    if (editSceneName.trim() && currentSceneId) {
+      updateScene(currentSceneId, { name: editSceneName.trim() });
+      setIsEditDialogOpen(false);
+    }
+  };
+
+  const handleDeleteScene = () => {
+    if (currentSceneId && scenes.length > 1) {
+      deleteScene(currentSceneId);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+
+  const openEditDialog = () => {
+    if (currentScene) {
+      setEditSceneName(currentScene.name);
+      setIsEditDialogOpen(true);
+    }
+  };
+
   return (
-    <div className="p-4 bg-card/80 backdrop-blur-sm border-b border-border/40 space-y-4">
-      {/* Selección de escenas */}
-      <div className="flex items-center gap-4">
-        <Select value={currentSceneId} onValueChange={setActiveTool}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Seleccionar escena" />
-          </SelectTrigger>
-          <SelectContent>
-            {scenes.map((scene) => (
-              <SelectItem key={scene.id} value={scene.id}>
-                {scene.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <>
+      {/* Toolbar compacto */}
+      <div className="h-12 px-4 bg-card/90 backdrop-blur-sm border-b border-border/40 flex items-center justify-between">
+        {/* Lado izquierdo: Escenas y herramientas */}
+        <div className="flex items-center gap-2">
+          {/* Dropdown de Escenas */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <Map className="h-4 w-4" />
+                <span className="max-w-32 truncate">
+                  {currentScene?.name || "Sin escena"}
+                </span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56">
+              <div className="px-2 py-1.5 text-sm font-semibold">Escenas</div>
+              <DropdownMenuSeparator />
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => createScene(`Escena ${scenes.length + 1}`)}
-        >
-          Nueva Escena
-        </Button>
-      </div>
+              {scenes.map((scene) => (
+                <DropdownMenuItem
+                  key={scene.id}
+                  onClick={() =>
+                    useBoardStore.getState().setCurrentScene(scene.id)
+                  }
+                  className="flex justify-between items-center"
+                >
+                  <span
+                    className={
+                      scene.id === currentSceneId ? "font-semibold" : ""
+                    }
+                  >
+                    {scene.name}
+                  </span>
+                  {scene.id === currentSceneId && (
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                  )}
+                </DropdownMenuItem>
+              ))}
 
-      {/* Herramientas */}
-      <div className="flex items-center gap-2">
-        {tools.map((tool) => {
-          const Icon = tool.icon;
-          return (
-            <Button
-              key={tool.id}
-              variant={activeTool === tool.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => setActiveTool(tool.id)}
-              className="flex flex-col items-center gap-1 h-12 w-12"
-            >
-              <Icon className="h-4 w-4" />
-              <span className="text-xs">{tool.label}</span>
-            </Button>
-          );
-        })}
-      </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setIsSceneDialogOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Nueva Escena
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-      {/* Configuración del grid */}
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div className="space-y-2">
-          <label className="text-xs text-muted-foreground">Tipo de Grid</label>
-          <div className="flex gap-2">
-            <Button
-              variant={
-                currentScene.grid.type === "square" ? "default" : "outline"
-              }
-              size="sm"
-              onClick={() =>
-                updateScene(currentSceneId, {
-                  grid: { ...currentScene.grid, type: "square" },
-                })
-              }
-            >
-              <Grid3x3 className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={currentScene.grid.type === "hex" ? "default" : "outline"}
-              size="sm"
-              onClick={() =>
-                updateScene(currentSceneId, {
-                  grid: { ...currentScene.grid, type: "hex" },
-                })
-              }
-            >
-              <Hexagon className="h-4 w-4" />
-            </Button>
+          {/* Separador */}
+          <div className="w-px h-6 bg-border mx-2" />
+
+          {/* Herramientas compactas */}
+          <div className="flex items-center gap-1">
+            {tools.map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <Tooltip key={tool.id}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={activeTool === tool.id ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setActiveTool(tool.id)}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Icon className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>{tool.label}</p>
+                  </TooltipContent>
+                </Tooltip>
+              );
+            })}
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-xs text-muted-foreground">
-            Tamaño: {currentScene.grid.size}px
-          </label>
-          <Slider
-            value={[currentScene.grid.size]}
-            onValueChange={([value]) =>
-              updateScene(currentSceneId, {
-                grid: { ...currentScene.grid, size: value },
-              })
-            }
-            min={20}
-            max={200}
-            step={5}
-          />
-        </div>
+        {/* Lado derecho: Acciones y configuración */}
+        <div className="flex items-center gap-2">
+          {/* Acciones rápidas */}
+          {currentScene && (
+            <>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearFog}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Limpiar Niebla</p>
+                </TooltipContent>
+              </Tooltip>
 
-        <div className="space-y-2">
-          <label className="text-xs text-muted-foreground">Snap to Grid</label>
-          <Button
-            variant={currentScene.grid.snap ? "default" : "outline"}
-            size="sm"
-            onClick={() =>
-              updateScene(currentSceneId, {
-                grid: { ...currentScene.grid, snap: !currentScene.grid.snap },
-              })
-            }
-          >
-            {currentScene.grid.snap ? "Activado" : "Desactivado"}
-          </Button>
-        </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={openEditDialog}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Editar Escena</p>
+                </TooltipContent>
+              </Tooltip>
 
-        <div className="space-y-2">
-          <label className="text-xs text-muted-foreground">Acciones</label>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Upload className="h-4 w-4 mr-1" />
-              Fondo
-            </Button>
-            <Button variant="outline" size="sm" onClick={clearFog}>
-              <Trash2 className="h-4 w-4 mr-1" />
-              Limpiar Niebla
-            </Button>
-          </div>
+              {scenes.length > 1 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsDeleteDialogOpen(true)}
+                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Eliminar Escena</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </>
+          )}
+
+          {/* Configuración del Grid */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <div className="px-2 py-1.5 text-sm font-semibold">
+                Configuración
+              </div>
+              <DropdownMenuSeparator />
+
+              {currentScene && (
+                <>
+                  <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                    Tipo de Grid
+                  </div>
+                  <div className="flex gap-1 px-2 py-1">
+                    <Button
+                      variant={
+                        currentScene.grid.type === "square"
+                          ? "default"
+                          : "outline"
+                      }
+                      size="sm"
+                      onClick={() =>
+                        updateScene(currentSceneId!, {
+                          grid: { ...currentScene.grid, type: "square" },
+                        })
+                      }
+                      className="flex-1 h-8"
+                    >
+                      <Grid3x3 className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      variant={
+                        currentScene.grid.type === "hex" ? "default" : "outline"
+                      }
+                      size="sm"
+                      onClick={() =>
+                        updateScene(currentSceneId!, {
+                          grid: { ...currentScene.grid, type: "hex" },
+                        })
+                      }
+                      className="flex-1 h-8"
+                    >
+                      <svg
+                        className="h-3 w-3"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z M2 17L12 22L22 17 M12 12L2 7V17L12 22V12Z M12 12L22 7V17L12 22V12Z" />
+                      </svg>
+                    </Button>
+                  </div>
+
+                  <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                    Snap: {currentScene.grid.snap ? "Activado" : "Desactivado"}
+                  </div>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      updateScene(currentSceneId!, {
+                        grid: {
+                          ...currentScene.grid,
+                          snap: !currentScene.grid.snap,
+                        },
+                      })
+                    }
+                  >
+                    {currentScene.grid.snap
+                      ? "Desactivar Snap"
+                      : "Activar Snap"}
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-    </div>
+
+      {/* Diálogo para crear escena */}
+      <Dialog open={isSceneDialogOpen} onOpenChange={setIsSceneDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Crear Nueva Escena</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Label htmlFor="sceneName">Nombre de la escena</Label>
+            <Input
+              id="sceneName"
+              value={newSceneName}
+              onChange={(e) => setNewSceneName(e.target.value)}
+              placeholder="Ingresa el nombre de la escena"
+              onKeyDown={(e) => e.key === "Enter" && handleCreateScene()}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsSceneDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button onClick={handleCreateScene} disabled={!newSceneName.trim()}>
+              Crear Escena
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Diálogo para editar escena */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Escena</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Label htmlFor="editSceneName">Nombre de la escena</Label>
+            <Input
+              id="editSceneName"
+              value={editSceneName}
+              onChange={(e) => setEditSceneName(e.target.value)}
+              placeholder="Ingresa el nuevo nombre"
+              onKeyDown={(e) => e.key === "Enter" && handleEditScene()}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsEditDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button onClick={handleEditScene} disabled={!editSceneName.trim()}>
+              Guardar Cambios
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Diálogo para eliminar escena */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Eliminar Escena</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>
+              ¿Estás seguro de que quieres eliminar la escena "
+              {currentScene?.name}"? Esta acción no se puede deshacer.
+            </p>
+            {scenes.length === 1 && (
+              <p className="text-sm text-destructive">
+                No puedes eliminar la única escena existente.
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteScene}
+              disabled={scenes.length <= 1}
+            >
+              Eliminar Escena
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
