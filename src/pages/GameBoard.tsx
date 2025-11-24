@@ -1,4 +1,4 @@
-// src/pages/GameBoard.tsx (completamente renovado)
+// src/pages/GameBoard.tsx (solución corregida)
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -19,6 +19,8 @@ import {
   Settings,
   PanelLeftClose,
   PanelLeftOpen,
+  PanelRightClose,
+  PanelRightOpen,
 } from "lucide-react";
 
 const GameBoard = () => {
@@ -52,7 +54,7 @@ const GameBoard = () => {
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
+  }, [showTokenLibrary, showInitiative, showChat]);
 
   return (
     <div className="h-screen flex flex-col bg-background">
@@ -63,7 +65,7 @@ const GameBoard = () => {
       <div className="flex-1 flex overflow-hidden">
         {/* Panel lateral izquierdo - Biblioteca de tokens */}
         {showTokenLibrary && (
-          <div className="w-80 border-r border-border/40 bg-card/50 backdrop-blur-sm flex flex-col">
+          <div className="w-80 border-r border-border/40 bg-card/50 backdrop-blur-sm flex flex-col transition-all duration-300 flex-shrink-0">
             <div className="p-4 border-b border-border/40 flex items-center justify-between">
               <h3 className="font-semibold">Biblioteca de Tokens</h3>
               <Button
@@ -80,30 +82,51 @@ const GameBoard = () => {
           </div>
         )}
 
-        {/* Área central del tablero */}
-        <div ref={containerRef} className="flex-1 relative bg-muted/20">
+        {/* Área central del tablero - SIEMPRE flex-1 */}
+        <div 
+          ref={containerRef} 
+          className="flex-1 relative bg-muted/20 transition-all duration-300"
+        >
           {dimensions.width > 0 && dimensions.height > 0 && (
             <BoardStage width={dimensions.width} height={dimensions.height} />
           )}
 
-          {/* Botón para mostrar/ocultar panel lateral */}
-          {!showTokenLibrary && (
-            <Button
-              variant="secondary"
-              size="sm"
-              className="absolute top-4 left-4"
-              onClick={() => setShowTokenLibrary(true)}
-            >
-              <PanelLeftOpen className="h-4 w-4" />
-            </Button>
-          )}
+          {/* Botones para mostrar/ocultar paneles */}
+          <div className="absolute top-4 left-4 flex flex-col gap-2">
+            {!showTokenLibrary && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowTokenLibrary(true)}
+                className="shadow-md"
+              >
+                <PanelLeftOpen className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+
+          <div className="absolute top-4 right-4 flex flex-col gap-2">
+            {!(showInitiative || showChat) && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setShowInitiative(true);
+                  setShowChat(true);
+                }}
+                className="shadow-md"
+              >
+                <PanelRightOpen className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
 
-        {/* Panel lateral derecho */}
+        {/* Panel lateral derecho - SIEMPRE presente pero con ancho variable */}
         <div className="flex">
           {/* Tracker de iniciativa */}
           {showInitiative && (
-            <div className="w-64 border-l border-border/40 bg-card/50 backdrop-blur-sm">
+            <div className="w-64 border-l border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 flex-shrink-0">
               <div className="p-4 border-b border-border/40 flex items-center justify-between">
                 <h3 className="font-semibold">Iniciativa</h3>
                 <Button
@@ -111,7 +134,7 @@ const GameBoard = () => {
                   size="sm"
                   onClick={() => setShowInitiative(false)}
                 >
-                  <PanelLeftClose className="h-4 w-4" />
+                  <PanelRightClose className="h-4 w-4" />
                 </Button>
               </div>
               <InitiativeTracker />
@@ -120,7 +143,7 @@ const GameBoard = () => {
 
           {/* Chat */}
           {showChat && (
-            <Card className="w-80 m-4 flex flex-col shadow-elegant border-border/50 bg-card/80 backdrop-blur-sm">
+            <Card className="w-80 m-4 flex flex-col shadow-elegant border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 flex-shrink-0">
               <div className="p-4 border-b border-border/40 flex items-center justify-between">
                 <h3 className="font-semibold">{t("chat:title")}</h3>
                 <Button
@@ -128,7 +151,7 @@ const GameBoard = () => {
                   size="sm"
                   onClick={() => setShowChat(false)}
                 >
-                  <PanelLeftClose className="h-4 w-4" />
+                  <PanelRightClose className="h-4 w-4" />
                 </Button>
               </div>
               <div className="flex-1 p-4 overflow-y-auto">
@@ -161,6 +184,13 @@ const GameBoard = () => {
           </span>
           <Separator orientation="vertical" className="h-4" />
           <span>Herramienta: {useBoardStore.getState().activeTool}</span>
+          <Separator orientation="vertical" className="h-4" />
+          <span>
+            Paneles:{" "}
+            {[showTokenLibrary && "Tokens", showInitiative && "Iniciativa", showChat && "Chat"]
+              .filter(Boolean)
+              .join(", ") || "Ninguno"}
+          </span>
         </div>
 
         <div className="flex items-center gap-4">
@@ -168,6 +198,7 @@ const GameBoard = () => {
             variant="ghost"
             size="sm"
             onClick={() => setShowInitiative(!showInitiative)}
+            className={!showInitiative ? "text-muted-foreground" : ""}
           >
             <Users className="h-3 w-3 mr-1" />
             Iniciativa
@@ -189,6 +220,7 @@ const GameBoard = () => {
             variant="ghost"
             size="sm"
             onClick={() => setShowChat(!showChat)}
+            className={!showChat ? "text-muted-foreground" : ""}
           >
             <MessageSquare className="h-3 w-3" />
           </Button>
